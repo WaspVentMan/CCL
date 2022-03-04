@@ -102,7 +102,7 @@ def remage2x256(file):
     hexy = ["0", "1", "2", "3", "4", "5", "6", "7", "9", "a", "b", "c", "d", "e", "f"]
 
     for item in key_data:
-        key.append(item)
+        key.append(item) 
     
     image_data = ""
     x = 0
@@ -116,6 +116,7 @@ def remage2x256(file):
                 else:
                     image_data += "\033[38;2;" + str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16)) + ";48;2;"
                     x += 6
+                x += 1
                 if data[x] in key:
                     image_data += str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16))
                     x += 1
@@ -147,22 +148,21 @@ def remani2x256(file):
                         n = 1
                         image_data += "\033[38;2;255;255;255;48;2;"
                     elif data[x+1] == "B":
-                        n = 1
                         image_data += "\033[38;2;0;0;0;48;2;"
+                        x += 1
                     else:
-                        n = 6
                         image_data += "\033[38;2;" + str(int(str(data[x+1] + data[x+2]), base=16)) + ";" + str(int("0x" + str(data[x+3] + data[x+4]), base=16)) + ";" + str(int("0x" + str(data[x+5] + data[x+6]), base=16)) + ";48;2;"
+                        x += 6
                     if data[x+1] == "W":
-                        n += 1
                         image_data += "255;255;255"
+                        x += 1
                     elif data[x+1] == "B":
-                        n += 1
                         image_data += "0;0;0"
+                        x += 1
                     else:
-                        n += 6
                         image_data += str(int("0x" + str(data[x+1] + data[x+2]), base=16)) + ";" + str(int("0x" + str(data[x+3] + data[x+4]), base=16)) + ";" + str(int("0x" + str(data[x+5] + data[x+6]), base=16))
+                        x += 6
                     image_data += "m▀\033[0m"
-                    x += 1 + n
                 elif data[x] == "\\": x += 1; image_data += "\n"
                 elif data[x] == "@":
                     x += 1

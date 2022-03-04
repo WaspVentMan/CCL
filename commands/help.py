@@ -47,7 +47,7 @@ def help(module: str) -> None:
         print("import: \033[1;35;40mfrom \033[1;33;40mfunctions.rem \033[1;35;40mimport \033[1;34;40mremage\033[0m")
         print("The \"remage\" image format has 5 different modes (4 of which are functional) each has a header.")
         print("\nRemage Headers:")
-        print("R.OLD: Basic remage format, \"0-f\" for colours \"\\\" for a new line. Max reccomended size: 119 x63)\n")
+        print("R.OLD: Basic remage format, \"0-f\" for colours \"\\\" for a new line. Max reccomended size: 119x63)\n")
         print("2xOLD: Double pixel density, \"0-f\" for colours \"\\\" for a new line. Max reccomended size: 238x126)\nIt is rendered in a way that means you need to lay out the data in a backwards N pattern (top pixel, bottom pixel, next row, repeat)\n")
         print("R.256: The same as R.OLD, but allows for all colours to be used. Max reccomended size: 118x62)\nColours are represented like this: \":255255255\" (white), new lines are still \"\\\".\n")
         print("2x256: The same as 2xOLD, but allows for all colours to be used. Max reccomended size: 236x124)\nColours are represented like this: \":255255255\" (white), new lines are still \"\\\", it still uses the funny backwards N pattern.\n")
