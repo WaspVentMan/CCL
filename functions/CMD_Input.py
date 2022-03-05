@@ -25,7 +25,7 @@ def CMD_Input(input):
 
         elif input.startswith("remage"):
             if len(input.split(" ")) != 2:
-                print(colour(1, 31, 40, "[ERROR]") + " Not enough (or too many) arguments given.")
+                remage()
             else:
                 remage(input.split(" ")[1])
 

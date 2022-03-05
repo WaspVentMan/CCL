@@ -2,6 +2,7 @@
 
 import os
 from functions.colour import colour
+from functions.maths import *
 
 def image_colour(data) -> str:
     if   str(data) == "0" : data = "\033[30;"
@@ -177,14 +178,29 @@ def remani2x256(file):
 
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def remage(file: str) -> None:
-
+def remage(file = "") -> None:
         """
         remage()
         
         Displays an image in the python termainal in the .remage format from the 'images' folder.\n
-        The image must have a header depending on the formatting: 'R.OLD', '2xOLD', 'R.256' or '2x256'.
+        The image must have a header depending on the formatting: 'R.OLD', '2xOLD', 'R.256' or '2x256'.\n
+        Leaving the field blank will list all files available to be used with Remage.
         """
+        if file == "":
+            dir = os.listdir("images")
+            for item in dir:
+                with open('images/' + str(item)) as f: data = f.read()
+                size = os.path.getsize('images/' + item)
+                size_style = "B"
+                if size >= 1024:
+                    size = top(size/1024)
+                    size_style = "KB"
+                    if size >= 1024:
+                        size = top(size/1024)
+                        size_style = "MB"
+
+                print("Format: " + data[:5] + " | Size: " + str(size) + size_style + " "*(6-len(str(size))-len(size_style)) + " | " + item)
+            return
         try:
             with open('images/' + str(file) + '.remage') as f: data = f.read()
         except:

@@ -36,6 +36,28 @@ def x2256_Convert(name):
 
     used_values = {}
 
+    x = size[0]
+    y = size[1]
+
+    x = x/238
+    y = y/126
+
+    if x > 1 or y > 1:
+        confirm = ""
+        while confirm not in ["y", "n"]:
+            confirm = input("Image is larger than the max recommended size (238x126).\nKeeping it at this size will greatly increase load times.\nDo you want to auto compress the image? (y/n)\n>>> ")
+        if confirm == "n":
+            pass
+        else:
+            if x > y:
+                x = round(red_image_rgb.width/x)
+                y = round(red_image_rgb.height/x)
+            else:
+                x = round(red_image_rgb.width/y)
+                y = round(red_image_rgb.height/y)
+            red_image_rgb = red_image_rgb.resize((x,y))
+            size = red_image_rgb.size
+
     data = ""
 
     for y in range(floor(size[1]/2)):
@@ -95,10 +117,7 @@ def x2256_Convert(name):
         sorted_dict[w] = used_values[w]
 
     shorters = ["A", "B", "C", "D", "E", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"]
-    #shorters = ["A"]
-
-    # Advanced compression currently disabled because it's causing issues. (Fix later).
-
+    
     x = 0
     to_delete = []
     for item in sorted_dict:
@@ -127,6 +146,28 @@ def x2256_Convert_lossy(name):
     size = red_image.size
 
     used_values = {}
+
+    x = size[0]
+    y = size[1]
+
+    x = x/238
+    y = y/126
+
+    if x > 1 or y > 1:
+        confirm = ""
+        while confirm not in ["y", "n"]:
+            confirm = input("Image is larger than the max recommended size (238x126).\nKeeping it at this size will greatly increase load times.\nDo you want to auto compress the image? (y/n)\n>>> ")
+        if confirm == "n":
+            pass
+        else:
+            if x > y:
+                x = round(red_image_rgb.width/x)
+                y = round(red_image_rgb.height/x)
+            else:
+                x = round(red_image_rgb.width/y)
+                y = round(red_image_rgb.height/y)
+            red_image_rgb = red_image_rgb.resize((x,y))
+            size = red_image_rgb.size
 
     data = ""
 
@@ -187,10 +228,7 @@ def x2256_Convert_lossy(name):
         sorted_dict[w] = used_values[w]
 
     shorters = ["A", "B", "C", "D", "E", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"]
-    #shorters = ["A"]
-
-    # Advanced compression currently disabled because it's causing issues. (Fix later).
-
+    
     x = 0
     to_delete = []
     for item in sorted_dict:
@@ -258,8 +296,15 @@ def x2256_anim_Convert(name):
     a.write(data)
     return data
 
-mode = ""
-while mode not in ["-", "+"]:
-    mode = input("Lossy (-) or Lossless (+)?\n>>> ")
-if mode == "-": x2256_Convert_lossy(input("Input the image name\n>>> "))
-else:           x2256_Convert(input("Input the image name\n>>> "))
+while True:
+    image = input("Input the image name\n>>> ")
+    mode = ""
+    while mode not in ["-", "+"]:
+        mode = input("Lossy (-) or Lossless (+)?\n>>> ")
+    if mode == "-": x2256_Convert_lossy(image)
+    else:           x2256_Convert(image)
+    again = ""
+    while again not in ["y", "n"]:
+        again = input("Again? (y/n)\n>>> ")
+    if again == "n":
+        break
