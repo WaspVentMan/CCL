@@ -154,25 +154,30 @@ def x2256_Convert_lossy(name):
     a = open("images/" + name + ".remage", "w"); a.write(data)
 
 def x2256_anim_Convert(name):
-    red_image = Image.open(name + ".gif"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; x = size[0];  y = size[1]; x = x/238; y = y/126; data = ""; temp = {}; t = 0; to_delete = []
+    red_image = Image.open(name + ".gif"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; xx = size[0];  yy = size[1]; xx = xx/238; yy = yy/126; data = ""; temp = {}; t = 0; to_delete = []
 
-    if x > 1 or y > 1:
+    if xx > 1 or yy > 1:
         confirm = ""
         while confirm not in ["y", "n"]: confirm = input("Image is larger than the max recommended size (238x126).\nKeeping it at this size will greatly increase load times.\nDo you want to auto compress the image? (y/n)\n>>> ")
         if confirm == "n": pass
         else:
-            if x > y: x = round(red_image_rgb.width/x); y = round(red_image_rgb.height/x)
-            else:     x = round(red_image_rgb.width/y); y = round(red_image_rgb.height/y)
-            red_image_rgb = red_image_rgb.resize((x,y)); size = red_image_rgb.size
+            if xx > yy: xx = round(red_image_rgb.width/xx); yy = round(red_image_rgb.height/xx)
+            else:     xx = round(red_image_rgb.width/yy); yy = round(red_image_rgb.height/yy)
+            red_image_rgb = red_image_rgb.resize((xx,yy)); size = red_image_rgb.size
+
+    length = red_image.n_frames
+    c = 1
+    t_data = ""
 
     for frame in range(red_image.n_frames):
         red_image.seek(frame); red_image.save("frame.png"); _red_image = Image.open("frame.png"); red_image_rgb = _red_image.convert("RGBA")
+        red_image_rgb = red_image_rgb.resize((xx,yy))
         for y in range(floor(size[1]/2)):
             for x in range(size[0]):
-                r = str(hex(red_image_rgb.getpixel((x,(y*2)))[0]))
-                g = str(hex(red_image_rgb.getpixel((x,(y*2)))[1]))
-                b = str(hex(red_image_rgb.getpixel((x,(y*2)))[2]))
-                a = str(hex(red_image_rgb.getpixel((x,(y*2)))[3]))
+                r = str(hex(floor(red_image_rgb.getpixel((x,(y*2)))[0])))
+                g = str(hex(floor(red_image_rgb.getpixel((x,(y*2)))[1])))
+                b = str(hex(floor(red_image_rgb.getpixel((x,(y*2)))[2])))
+                a = str(hex(floor(red_image_rgb.getpixel((x,(y*2)))[3])))
                 if a != "0xff": r = "0xff"; g = "0xff"; b = "0xff"
                 else:
                     while len(r[2:]) < 2: r = r[-2:] + "0" + r[2:]
@@ -181,10 +186,10 @@ def x2256_anim_Convert(name):
                 try:    used_values[r[2:] + g[2:] + b[2:]] += 1
                 except: used_values[r[2:] + g[2:] + b[2:]] = 1
                 data += ":" + r[2:] + g[2:] + b[2:]
-                r=str(hex(red_image_rgb.getpixel((x,(y*2)+1))[0]))
-                g=str(hex(red_image_rgb.getpixel((x,(y*2)+1))[1]))
-                b=str(hex(red_image_rgb.getpixel((x,(y*2)+1))[2]))
-                a=str(hex(red_image_rgb.getpixel((x,(y*2)+1))[3]))
+                r = str(hex(floor(red_image_rgb.getpixel((x,(y*2)+1))[0])))
+                g = str(hex(floor(red_image_rgb.getpixel((x,(y*2)+1))[1])))
+                b = str(hex(floor(red_image_rgb.getpixel((x,(y*2)+1))[2])))
+                a = str(hex(floor(red_image_rgb.getpixel((x,(y*2)+1))[3])))
                 if a != "0xff": r = "0xff"; g = "0xff"; b = "0xff"
                 else:
                     while len(r[2:]) < 2: r = r[-2:] + "0" + r[2:]
@@ -195,9 +200,14 @@ def x2256_anim_Convert(name):
                 data += ";" + r[2:] + g[2:] + b[2:]
             data += "\\\n"
             perc = round((y/floor(size[1]/2))*100)
-            print("["+"#"*perc+"-"*int(100-perc)+"]",end="\r")
-        print("[" + "#"*100 + "]")
+            print("["+"#"*perc+"-"*int(100-perc)+"] " + str(c) + "/" + str(length),end="\r")
+        print("[" + "#"*100 + "] " + str(c) + "/" + str(length), end="\r")
+        c += 1
         data += "@\n"
+        t_data += data
+        data = ""
+    data = t_data
+    print("")
 
     for item in used_values:
         if used_values[item] > 1: temp[item] = used_values[item]
@@ -219,19 +229,24 @@ def x2256_anim_Convert(name):
     a = open("images/" + name + ".remage", "w"); a.write(data)
 
 def x2256_anim_Convert_lossy(name):
-    red_image = Image.open(name + ".gif"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; x = size[0];  y = size[1]; x = x/238; y = y/126; data = ""; temp = {}; t = 0; to_delete = []
+    red_image = Image.open(name + ".gif"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; xx = size[0];  yy = size[1]; xx = xx/238; yy = yy/126; data = ""; temp = {}; t = 0; to_delete = []
 
-    if x > 1 or y > 1:
+    if xx > 1 or yy > 1:
         confirm = ""
         while confirm not in ["y", "n"]: confirm = input("Image is larger than the max recommended size (238x126).\nKeeping it at this size will greatly increase load times.\nDo you want to auto compress the image? (y/n)\n>>> ")
         if confirm == "n": pass
         else:
-            if x > y: x = round(red_image_rgb.width/x); y = round(red_image_rgb.height/x)
-            else:     x = round(red_image_rgb.width/y); y = round(red_image_rgb.height/y)
-            red_image_rgb = red_image_rgb.resize((x,y)); size = red_image_rgb.size
+            if xx > yy: xx = round(red_image_rgb.width/xx); yy = round(red_image_rgb.height/xx)
+            else:     xx = round(red_image_rgb.width/yy); yy = round(red_image_rgb.height/yy)
+            red_image_rgb = red_image_rgb.resize((xx,yy)); size = red_image_rgb.size
+
+    length = red_image.n_frames
+    c = 1
+    t_data = ""
 
     for frame in range(red_image.n_frames):
         red_image.seek(frame); red_image.save("frame.png"); _red_image = Image.open("frame.png"); red_image_rgb = _red_image.convert("RGBA")
+        red_image_rgb = red_image_rgb.resize((xx,yy))
         for y in range(floor(size[1]/2)):
             for x in range(size[0]):
                 r = str(hex(floor(red_image_rgb.getpixel((x,(y*2)))[0]/5)*5))
@@ -260,9 +275,14 @@ def x2256_anim_Convert_lossy(name):
                 data += ";" + r[2:] + g[2:] + b[2:]
             data += "\\\n"
             perc = round((y/floor(size[1]/2))*100)
-            print("["+"#"*perc+"-"*int(100-perc)+"]",end="\r")
-        print("[" + "#"*100 + "]")
+            print("["+"#"*perc+"-"*int(100-perc)+"] " + str(c) + "/" + str(length),end="\r")
+        print("[" + "#"*100 + "] " + str(c) + "/" + str(length), end="\r")
+        c += 1
         data += "@\n"
+        t_data += data
+        data = ""
+    data = t_data
+    print("")
 
     for item in used_values:
         if used_values[item] > 1: temp[item] = used_values[item]
