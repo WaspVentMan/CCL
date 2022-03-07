@@ -2,49 +2,26 @@
 
 import os
 from functions.colour import colour
-from functions.maths import *
 
 def image_colour(data) -> str:
-    if   str(data) == "0" : data = "\033[30;"
-    elif str(data) == "1" : data = "\033[90;"
-    elif str(data) == "2" : data = "\033[37;"
-    elif str(data) == "3" : data = "\033[97;"
-    elif str(data) == "4" : data = "\033[33;"
-    elif str(data) == "5" : data = "\033[93;"
-    elif str(data) == "6" : data = "\033[31;"
-    elif str(data) == "7" : data = "\033[91;"
-    elif str(data) == "8" : data = "\033[35;"
-    elif str(data) == "9" : data = "\033[95;"
-    elif str(data) == "a" : data = "\033[34;"
-    elif str(data) == "b" : data = "\033[94;"
-    elif str(data) == "c" : data = "\033[36;"
-    elif str(data) == "d" : data = "\033[96;"
-    elif str(data) == "e" : data = "\033[32;"
-    elif str(data) == "f" : data = "\033[92;"
-    elif str(data) == "\\": data = "\n"
-    else:                   data = ""
+    colour_dict = {
+        "0": "\033[30;", "1": "\033[90;", "2": "\033[37;", "3": "\033[97;", "4": "\033[33;", "5": "\033[93;",
+        "6": "\033[31;", "7": "\033[91;", "8": "\033[35;", "9": "\033[95;", "a": "\033[34;", "b": "\033[34;",
+        "c": "\033[36;", "d": "\033[96;", "e": "\033[32;", "f": "\033[92;", "\\": "\n"}
 
-    return data
+    if str(data) in colour_dict:
+        return colour_dict[str(data)]
+    else:
+        return ""
 
 def bg_colour(data) -> str:
-    if   str(data) == "0": data = "40"
-    elif str(data) == "1": data = "100"
-    elif str(data) == "2": data = "47"
-    elif str(data) == "3": data = "107"
-    elif str(data) == "4": data = "43"
-    elif str(data) == "5": data = "103"
-    elif str(data) == "6": data = "41"
-    elif str(data) == "7": data = "101"
-    elif str(data) == "8": data = "45"
-    elif str(data) == "9": data = "105"
-    elif str(data) == "a": data = "44"
-    elif str(data) == "b": data = "104"
-    elif str(data) == "c": data = "46"
-    elif str(data) == "d": data = "106"
-    elif str(data) == "e": data = "42"
-    elif str(data) == "f": data = "102"
+    colour_dict = {
+        "0": "40", "1": "100", "2": "47", "3": "107", 
+        "4": "43", "5": "103", "6": "41", "7": "101",
+        "8": "45", "9": "105", "a": "44", "b": "104",
+        "c": "46", "d": "106", "e": "42", "f": "102"}
 
-    return data
+    return colour_dict[str(data)]
 
 def remage_old(file):
     with open('images/' + str(file) + '.remage') as f: data = f.read()[5:]
@@ -56,7 +33,7 @@ def remage_old(file):
     
     if image_data[len(image_data)-1] in ["\n", "\\", "n"]:
         image_data = image_data[:-1]
-    input(image_data)
+    print(image_data)
 
 def remage2x(file):
     with open('images/' + str(file) + '.remage') as f: data = f.read()[5:]
@@ -68,7 +45,7 @@ def remage2x(file):
     
     if image_data[len(image_data)-1] in ["\n", "\\", "n"]:
         image_data = image_data[:-1]
-    input(image_data)
+    print(image_data)
 
 def remage256(file):
     with open('images/' + str(file) + '.remage') as f: data = f.read()[5:]
@@ -79,12 +56,10 @@ def remage256(file):
             if   str(data[x]) == ":" : x += 10; image_data += "\033[38;2;" + str(data[x+1]) + str(data[x+2]) + str(data[x+3]) + ";" + str(data[x+4]) + str(data[x+5]) + str(data[x+6]) + ";" + str(data[x+7]) + str(data[x+8]) + str(data[x+9]) + "m██\033[0m"
             elif str(data[x]) == "\\": x += 1;  image_data = image_data[:-10] + "\n"; image_data = image_data[:-1]
             else:                      x += 1
-        except:
-            pass
+        except: pass
 
-    if image_data[len(image_data)-1] in ["\n", "\\", "n"]:
-        image_data = image_data[:-1]
-    input(image_data)
+    if image_data[len(image_data)-1] in ["\n", "\\", "n"]: image_data = image_data[:-1]
+    print(image_data)
 
 def remage2x256(file):
     with open('images/' + str(file) + '.remage') as f:
@@ -100,13 +75,10 @@ def remage2x256(file):
         data = "".join(data)
     
     key = []
-    hexy = ["0", "1", "2", "3", "4", "5", "6", "7", "9", "a", "b", "c", "d", "e", "f"]
 
-    for item in key_data:
-        key.append(item) 
+    for item in key_data: key.append(item) 
     
-    image_data = ""
-    x = 0
+    image_data, x = "", 0
     while x < len(data):
         try:
             if data[x] == ":":
@@ -117,7 +89,6 @@ def remage2x256(file):
                 else:
                     image_data += "\033[38;2;" + str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16)) + ";48;2;"
                     x += 6
-                x += 1
                 if data[x] in key:
                     image_data += str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16))
                     x += 1
@@ -125,56 +96,58 @@ def remage2x256(file):
                     image_data += str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16))
                     x += 6
                 image_data += "m▀\033[0m"
-            elif data[x] == "\\": x += 1;  image_data += "\n"
+            elif data[x] == "\\": x += 1; print(image_data); image_data = ""
             else: x += 1
         except:
             x += 1
 
-    if image_data[len(image_data)-1] in ["\n", "\\", "n"]:
-        image_data = image_data[:-1]
-    input(image_data)
-
 def remani2x256(file):
-    with open('images/' + str(file) + '.remage') as f: data = f.read()[5:]
-
     os.system('cls' if os.name == 'nt' else 'clear')
+    with open('images/' + str(file) + '.remage') as f:
+        file_data = f.readlines()
+        key = file_data[0][5:-1]
+        key = key.replace("{", "").replace("}", "")
+        vals = key.split(", ")
+        key_data = {}
+        for val in vals:
+            x = val.replace("'", "").split(": ")
+            key_data[x[1]] = x[0]
+        data = file_data[1:]
+        data = "".join(data)
     
-    image_data = ""; x = 0
-    for v in range(50):
-        image_data = ""; x = 0
+    key = []
+
+    for item in key_data:
+        key.append(item) 
+    
+    image_data = ""
+    for f in range(20):
+        x = 0
         while x < len(data):
             try:
                 if data[x] == ":":
-                    if data[x+1] == "W":
-                        n = 1
-                        image_data += "\033[38;2;255;255;255;48;2;"
-                    elif data[x+1] == "B":
-                        image_data += "\033[38;2;0;0;0;48;2;"
+                    x += 1
+                    if data[x] in key:
+                        image_data += "\033[38;2;" + str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16)) + ";48;2;"
                         x += 1
                     else:
-                        image_data += "\033[38;2;" + str(int(str(data[x+1] + data[x+2]), base=16)) + ";" + str(int("0x" + str(data[x+3] + data[x+4]), base=16)) + ";" + str(int("0x" + str(data[x+5] + data[x+6]), base=16)) + ";48;2;"
+                        image_data += "\033[38;2;" + str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16)) + ";48;2;"
                         x += 6
-                    if data[x+1] == "W":
-                        image_data += "255;255;255"
-                        x += 1
-                    elif data[x+1] == "B":
-                        image_data += "0;0;0"
+                    if data[x] in key:
+                        image_data += str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16))
                         x += 1
                     else:
-                        image_data += str(int("0x" + str(data[x+1] + data[x+2]), base=16)) + ";" + str(int("0x" + str(data[x+3] + data[x+4]), base=16)) + ";" + str(int("0x" + str(data[x+5] + data[x+6]), base=16))
+                        image_data += str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16))
                         x += 6
                     image_data += "m▀\033[0m"
-                elif data[x] == "\\": x += 1; image_data += "\n"
+                elif data[x] == "\\": x += 1;  image_data += "\n"
                 elif data[x] == "@":
-                    x += 1
-                    if image_data[len(image_data)-1] in ["\n", "\\", "n"]:
-                        image_data = image_data[:-1]
-                    print(image_data, end="")
-                    for v in range(126): print("\033[A\033[A")
-                    image_data = ""
+                    x += 1; print(image_data); image_data = ""
+                    for b in range(250):
+                        print("\033[A\033[A")
                 else: x += 1
             except:
-                pass
+                x += 1
 
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -183,24 +156,26 @@ def remage(file = "") -> None:
         remage()
         
         Displays an image in the python termainal in the .remage format from the 'images' folder.\n
-        The image must have a header depending on the formatting: 'R.OLD', '2xOLD', 'R.256' or '2x256'.\n
-        Leaving the field blank will list all files available to be used with Remage.
+        The image must have a header depending on the formatting: 'R.OLD', '2xOLD', 'R.256', '2x256' or '256AN'.\n
+        Leaving the field blank will list all files available to be used with Remage. (All files in the images folder.)
         """
         if file == "":
+            print("")
             dir = os.listdir("images")
             for item in dir:
                 with open('images/' + str(item)) as f: data = f.read()
                 size = os.path.getsize('images/' + item)
                 size_style = "B"
                 if size >= 1024:
-                    size = top(size/1024)
-                    size_style = "KB"
+                    size = round(size/1024)
+                    size_style = "KiB"
                     if size >= 1024:
-                        size = top(size/1024)
-                        size_style = "MB"
+                        size = round(size/1024)
+                        size_style = "MiB"
 
-                print("Format: " + data[:5] + " | Size: " + str(size) + size_style + " "*(6-len(str(size))-len(size_style)) + " | " + item)
+                print("Format: " + data[:5] + " | Size: " + str(size) + size_style + " "*(7-len(str(size))-len(size_style)) + " | Name: " + item[:-7])
             return
+
         try:
             with open('images/' + str(file) + '.remage') as f: data = f.read()
         except:
