@@ -1,7 +1,8 @@
-# Jacob A. G. Taylor, 2022
+# Jacob A. G. Taylor, https://github.com/WaspVentMan, 2022
 
 from functions.colour import *
 from functions.ace import ace
+from functions.date_time import date_time
 from commands.help import help
 from commands.rem import remage
 import os
@@ -31,6 +32,9 @@ def CMD_Input(input):
 
         elif input.startswith("ace"):
             ace(input)
+        
+        elif input.startswith("time"):
+            print(colour(1, 36, 40, "\n[DEBUG]") + " It is currently: " + date_time()[0] + ", " + date_time()[1] + ", " + str(date_time()[2]) + date_time()[3] + " " + date_time()[4] + " " + str(date_time()[5]))
 
         elif input.split()[0].upper() in windows_cmd:
             os.system(input)

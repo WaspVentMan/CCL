@@ -1,3 +1,5 @@
+# Jacob A. G. Taylor, https://github.com/WaspVentMan, 2022
+
 def floor(number: int) -> int:
     """
     floor()

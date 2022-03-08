@@ -1,4 +1,4 @@
-# Jacob A. G. Taylor, 2022
+# Jacob A. G. Taylor, https://github.com/WaspVentMan, 2022
 
 from functions.colour import *
 from functions.date_time import date_time

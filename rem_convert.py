@@ -1,7 +1,9 @@
+# Jacob A. G. Taylor, https://github.com/WaspVentMan, 2022
+
+import os
 from PIL import Image
 
 from functions.maths import *
-from commands.rem import remage
 
 def R256_Convert(name):
     red_image = Image.open(name + ".png")
@@ -33,13 +35,9 @@ def x2256_Convert(name):
     red_image = Image.open(name + ".png"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; x = size[0];  y = size[1]; x = x/238; y = y/126; data = ""; temp = {}; t = 0; to_delete = []
 
     if x > 1 or y > 1:
-        confirm = ""
-        while confirm not in ["y", "n"]: confirm = input("Image is larger than the max recommended size (238x126).\nKeeping it at this size will greatly increase load times.\nDo you want to auto compress the image? (y/n)\n>>> ")
-        if confirm == "n": pass
-        else:
-            if x > y: x = round(red_image_rgb.width/x); y = round(red_image_rgb.height/x)
-            else:     x = round(red_image_rgb.width/y); y = round(red_image_rgb.height/y)
-            red_image_rgb = red_image_rgb.resize((x,y)); size = red_image_rgb.size
+        if x > y: x = round(red_image_rgb.width/x); y = round(red_image_rgb.height/x)
+        else:     x = round(red_image_rgb.width/y); y = round(red_image_rgb.height/y)
+        red_image_rgb = red_image_rgb.resize((x,y)); size = red_image_rgb.size
 
     for y in range(floor(size[1]/2)):
         for x in range(size[0]):
@@ -66,7 +64,7 @@ def x2256_Convert(name):
                 while len(b[2:]) < 2: b = b[-2:] + "0" + b[2:]
             try:    used_values[r[2:] + g[2:] + b[2:]] += 1
             except: used_values[r[2:] + g[2:] + b[2:]] = 1
-            data += ";" + r[2:] + g[2:] + b[2:]
+            data += ":" + r[2:] + g[2:] + b[2:]
         data += "\\\n"
         perc = round((y/floor(size[1]/2))*100)
         print("["+"#"*perc+"-"*int(100-perc)+"]",end="\r")
@@ -79,8 +77,8 @@ def x2256_Convert(name):
     sorted_dict = {}; sorted_keys = sorted(used_values, key=used_values.get, reverse=True)
     for w in sorted_keys: sorted_dict[w] = used_values[w]
 
-    # Unusable in shorters: 0123456789abcdef:;@{}'"\
-    shorters = " !#$%&()*+,-./<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+    # Unusable in shorters: 0123456789abcdef:@"\
+    shorters = " !#$%&()*+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
     for item in sorted_dict:
         if t + 1 > len(shorters): to_delete.append(item)
@@ -88,20 +86,20 @@ def x2256_Convert(name):
     for item in to_delete: del sorted_dict[item]
     for item in sorted_dict: data = data.replace(item, sorted_dict[item])
 
-    data = "2x256" + str(sorted_dict) + "\n" + data; data = data.replace("{", "").replace("}", "").replace("'", "").replace(";", "")
+    data = data.replace(":", "")
+
+    sorted_dict = str(sorted_dict).replace("{", "").replace("}", "").replace("'", "").replace(": ", "").replace(", ", ":")
+
+    data = "2x256" + str(sorted_dict) + "\n" + data
     a = open("images/" + name + ".remage", "w"); a.write(data)
 
 def x2256_Convert_lossy(name):
     red_image = Image.open(name + ".png"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; x = size[0];  y = size[1]; x = x/238; y = y/126; data = ""; temp = {}; t = 0; to_delete = []
 
     if x > 1 or y > 1:
-        confirm = ""
-        while confirm not in ["y", "n"]: confirm = input("Image is larger than the max recommended size (238x126).\nKeeping it at this size will greatly increase load times.\nDo you want to auto compress the image? (y/n)\n>>> ")
-        if confirm == "n": pass
-        else:
-            if x > y: x = round(red_image_rgb.width/x); y = round(red_image_rgb.height/x)
-            else:     x = round(red_image_rgb.width/y); y = round(red_image_rgb.height/y)
-            red_image_rgb = red_image_rgb.resize((x,y)); size = red_image_rgb.size
+        if x > y: x = round(red_image_rgb.width/x); y = round(red_image_rgb.height/x)
+        else:     x = round(red_image_rgb.width/y); y = round(red_image_rgb.height/y)
+        red_image_rgb = red_image_rgb.resize((x,y)); size = red_image_rgb.size
 
     for y in range(floor(size[1]/2)):
         for x in range(size[0]):
@@ -128,7 +126,7 @@ def x2256_Convert_lossy(name):
                 while len(b[2:]) < 2: b = b[-2:] + "0" + b[2:]
             try:    used_values[r[2:] + g[2:] + b[2:]] += 1
             except: used_values[r[2:] + g[2:] + b[2:]] = 1
-            data += ";" + r[2:] + g[2:] + b[2:]
+            data += ":" + r[2:] + g[2:] + b[2:]
         data += "\\\n"
         perc = round((y/floor(size[1]/2))*100)
         print("["+"#"*perc+"-"*int(100-perc)+"]",end="\r")
@@ -141,8 +139,8 @@ def x2256_Convert_lossy(name):
     sorted_dict = {}; sorted_keys = sorted(used_values, key=used_values.get, reverse=True)
     for w in sorted_keys: sorted_dict[w] = used_values[w]
 
-    # Unusable in shorters: 0123456789abcdef:;@{}'"\
-    shorters = " !#$%&()*+,-./<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+    # Unusable in shorters: 0123456789abcdef:@"\
+    shorters = " !#$%&()*+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
     for item in sorted_dict:
         if t + 1 > len(shorters): to_delete.append(item)
@@ -150,20 +148,20 @@ def x2256_Convert_lossy(name):
     for item in to_delete: del sorted_dict[item]
     for item in sorted_dict: data = data.replace(item, sorted_dict[item])
 
-    data = "2x256" + str(sorted_dict) + "\n" + data; data = data.replace("{", "").replace("}", "").replace("'", "").replace(";", "")
+    data = data.replace(":", "")
+
+    sorted_dict = str(sorted_dict).replace("{", "").replace("}", "").replace("'", "").replace(": ", "").replace(", ", ":")
+
+    data = "2x256" + str(sorted_dict) + "\n" + data
     a = open("images/" + name + ".remage", "w"); a.write(data)
 
 def x2256_anim_Convert(name):
     red_image = Image.open(name + ".gif"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; xx = size[0];  yy = size[1]; xx = xx/238; yy = yy/126; data = ""; temp = {}; t = 0; to_delete = []
 
     if xx > 1 or yy > 1:
-        confirm = ""
-        while confirm not in ["y", "n"]: confirm = input("Image is larger than the max recommended size (238x126).\nKeeping it at this size will greatly increase load times.\nDo you want to auto compress the image? (y/n)\n>>> ")
-        if confirm == "n": pass
-        else:
-            if xx > yy: xx = round(red_image_rgb.width/xx); yy = round(red_image_rgb.height/xx)
-            else:     xx = round(red_image_rgb.width/yy); yy = round(red_image_rgb.height/yy)
-            red_image_rgb = red_image_rgb.resize((xx,yy)); size = red_image_rgb.size
+        if xx > yy: xx = round(red_image_rgb.width/xx); yy = round(red_image_rgb.height/xx)
+        else:     xx = round(red_image_rgb.width/yy); yy = round(red_image_rgb.height/yy)
+        red_image_rgb = red_image_rgb.resize((xx,yy)); size = red_image_rgb.size
 
     length = red_image.n_frames
     c = 1
@@ -171,7 +169,7 @@ def x2256_anim_Convert(name):
 
     for frame in range(red_image.n_frames):
         red_image.seek(frame); red_image.save("frame.png"); _red_image = Image.open("frame.png"); red_image_rgb = _red_image.convert("RGBA")
-        red_image_rgb = red_image_rgb.resize((xx,yy))
+        red_image_rgb = red_image_rgb.resize((size[0],size[1]))
         for y in range(floor(size[1]/2)):
             for x in range(size[0]):
                 r = str(hex(floor(red_image_rgb.getpixel((x,(y*2)))[0])))
@@ -197,7 +195,7 @@ def x2256_anim_Convert(name):
                     while len(b[2:]) < 2: b = b[-2:] + "0" + b[2:]
                 try:    used_values[r[2:] + g[2:] + b[2:]] += 1
                 except: used_values[r[2:] + g[2:] + b[2:]] = 1
-                data += ";" + r[2:] + g[2:] + b[2:]
+                data += ":" + r[2:] + g[2:] + b[2:]
             data += "\\\n"
             perc = round((y/floor(size[1]/2))*100)
             print("["+"#"*perc+"-"*int(100-perc)+"] " + str(c) + "/" + str(length),end="\r")
@@ -216,8 +214,8 @@ def x2256_anim_Convert(name):
     sorted_dict = {}; sorted_keys = sorted(used_values, key=used_values.get, reverse=True)
     for w in sorted_keys: sorted_dict[w] = used_values[w]
 
-    # Unusable in shorters: 0123456789abcdef:;@{}'"\
-    shorters = " !#$%&()*+,-./<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+    # Unusable in shorters: 0123456789abcdef:@"\
+    shorters = " !#$%&()*+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
     for item in sorted_dict:
         if t + 1 > len(shorters): to_delete.append(item)
@@ -225,20 +223,20 @@ def x2256_anim_Convert(name):
     for item in to_delete: del sorted_dict[item]
     for item in sorted_dict: data = data.replace(item, sorted_dict[item])
 
-    data = "256AN" + str(sorted_dict) + "\n" + data; data = data.replace("{", "").replace("}", "").replace("'", "").replace(";", "")
+    data = data.replace(":", "")
+
+    sorted_dict = str(sorted_dict).replace("{", "").replace("}", "").replace("'", "").replace(": ", "").replace(", ", ":")
+
+    data = "256AN" + str(sorted_dict) + "\n" + data
     a = open("images/" + name + ".remage", "w"); a.write(data)
 
 def x2256_anim_Convert_lossy(name):
     red_image = Image.open(name + ".gif"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; xx = size[0];  yy = size[1]; xx = xx/238; yy = yy/126; data = ""; temp = {}; t = 0; to_delete = []
 
     if xx > 1 or yy > 1:
-        confirm = ""
-        while confirm not in ["y", "n"]: confirm = input("Image is larger than the max recommended size (238x126).\nKeeping it at this size will greatly increase load times.\nDo you want to auto compress the image? (y/n)\n>>> ")
-        if confirm == "n": pass
-        else:
-            if xx > yy: xx = round(red_image_rgb.width/xx); yy = round(red_image_rgb.height/xx)
-            else:     xx = round(red_image_rgb.width/yy); yy = round(red_image_rgb.height/yy)
-            red_image_rgb = red_image_rgb.resize((xx,yy)); size = red_image_rgb.size
+        if xx > yy: xx = round(red_image_rgb.width/xx); yy = round(red_image_rgb.height/xx)
+        else:     xx = round(red_image_rgb.width/yy); yy = round(red_image_rgb.height/yy)
+        red_image_rgb = red_image_rgb.resize((xx,yy)); size = red_image_rgb.size
 
     length = red_image.n_frames
     c = 1
@@ -246,7 +244,7 @@ def x2256_anim_Convert_lossy(name):
 
     for frame in range(red_image.n_frames):
         red_image.seek(frame); red_image.save("frame.png"); _red_image = Image.open("frame.png"); red_image_rgb = _red_image.convert("RGBA")
-        red_image_rgb = red_image_rgb.resize((xx,yy))
+        red_image_rgb = red_image_rgb.resize((size[0],size[1]))
         for y in range(floor(size[1]/2)):
             for x in range(size[0]):
                 r = str(hex(floor(red_image_rgb.getpixel((x,(y*2)))[0]/5)*5))
@@ -272,10 +270,10 @@ def x2256_anim_Convert_lossy(name):
                     while len(b[2:]) < 2: b = b[-2:] + "0" + b[2:]
                 try:    used_values[r[2:] + g[2:] + b[2:]] += 1
                 except: used_values[r[2:] + g[2:] + b[2:]] = 1
-                data += ";" + r[2:] + g[2:] + b[2:]
+                data += ":" + r[2:] + g[2:] + b[2:]
             data += "\\\n"
-            perc = round((y/floor(size[1]/2))*100)
-            print("["+"#"*perc+"-"*int(100-perc)+"] " + str(c) + "/" + str(length),end="\r")
+            perc = floor((y/floor(size[1]/2))*100)
+            print("["+"#"*(perc)+"-"*int(100-perc) + "] " + str(c) + "/" + str(length),end="\r")
         print("[" + "#"*100 + "] " + str(c) + "/" + str(length), end="\r")
         c += 1
         data += "@\n"
@@ -291,8 +289,8 @@ def x2256_anim_Convert_lossy(name):
     sorted_dict = {}; sorted_keys = sorted(used_values, key=used_values.get, reverse=True)
     for w in sorted_keys: sorted_dict[w] = used_values[w]
 
-    # Unusable in shorters: 0123456789abcdef:;@{}'"\
-    shorters = " !#$%&()*+,-./<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+    # Unusable in shorters: 0123456789abcdef:@"{}'\
+    shorters = " !#$%&()*+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
     for item in sorted_dict:
         if t + 1 > len(shorters): to_delete.append(item)
@@ -300,14 +298,44 @@ def x2256_anim_Convert_lossy(name):
     for item in to_delete: del sorted_dict[item]
     for item in sorted_dict: data = data.replace(item, sorted_dict[item])
 
-    data = "256AN" + str(sorted_dict) + "\n" + data; data = data.replace("{", "").replace("}", "").replace("'", "").replace(";", "")
+    data = data.replace(":", "")
+
+    sorted_dict = str(sorted_dict).replace("{", "").replace("}", "").replace("'", "").replace(": ", "").replace(", ", ":")
+
+    data = "256AN" + str(sorted_dict) + "\n" + data
     a = open("images/" + name + ".remage", "w"); a.write(data)
 
 while True:
-    image = input("Input the image name\n>>> ")
     mode = ""
     while mode not in ["A", "S"]:
-        mode = input("(A)nimated image or (S)tatic image?\n>>> ")
+        image = input("Input the .png or .gif name. (Without file extension)\nor type \"all\" to convert all images in the root directory\n>>> ")
+        dir = os.listdir()
+        if image == "frame":
+            print("Invalid image.")
+
+        elif image == "all":
+            while mode not in ["-", "+"]:
+                mode = input("Lossy (-) or Lossless (+)?\n>>> ")
+            for item in dir:
+                if item[:-4] == "frame":
+                    pass
+                elif item[-3:] == "png":
+                    if mode == "-": x2256_Convert_lossy(item[:-4])
+                    else:           x2256_Convert(item[:-4])
+                elif item[-3:] == "gif":
+                    if mode == "-": x2256_anim_Convert_lossy(item[:-4])
+                    else:           x2256_anim_Convert(item[:-4])
+            exit()
+        else:
+            for item in dir:
+                if image == item[:-4]:
+                    if item[-3:] == "png":
+                        mode = "S"
+                    elif item[-3:] == "gif":
+                        mode = "A"
+                    else:
+                        print("Invalid image.")
+    
     if mode == "A":
         while mode not in ["-", "+"]:
             mode = input("Lossy (-) or Lossless (+)?\n>>> ")

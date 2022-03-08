@@ -1,3 +1,5 @@
+# Jacob A. G. Taylor, https://github.com/WaspVentMan, 2022
+
 from functions.colour import *
 import os
 

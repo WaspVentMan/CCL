@@ -1,4 +1,4 @@
-# Jacob A. G. Taylor, 2022
+# Jacob A. G. Taylor, https://github.com/WaspVentMan, 2022
 
 import os
 from functions.colour import colour
@@ -66,23 +66,23 @@ def remage2x256(file):
         file_data = f.readlines()
         key = file_data[0][5:-1]
         key = key.replace("{", "").replace("}", "")
-        vals = key.split(", ")
+        vals = key.split(":")
         key_data = {}
         for val in vals:
-            x = val.replace("'", "").split(": ")
-            key_data[x[1]] = x[0]
+            x = val.replace("'", "")
+            key_data[x[6:]] = x[:6]
         data = file_data[1:]
         data = "".join(data)
     
     key = []
+    hexy = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
 
     for item in key_data: key.append(item) 
     
     image_data, x = "", 0
     while x < len(data):
         try:
-            if data[x] == ":":
-                x += 1
+            if data[x] in key or data[x] in hexy:
                 if data[x] in key:
                     image_data += "\033[38;2;" + str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16)) + ";48;2;"
                     x += 1
@@ -107,15 +107,16 @@ def remani2x256(file):
         file_data = f.readlines()
         key = file_data[0][5:-1]
         key = key.replace("{", "").replace("}", "")
-        vals = key.split(", ")
+        vals = key.split(":")
         key_data = {}
         for val in vals:
-            x = val.replace("'", "").split(": ")
-            key_data[x[1]] = x[0]
+            x = val.replace("'", "")
+            key_data[x[6:]] = x[:6]
         data = file_data[1:]
         data = "".join(data)
     
     key = []
+    hexy = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
 
     for item in key_data:
         key.append(item) 
@@ -125,8 +126,7 @@ def remani2x256(file):
         x = 0
         while x < len(data):
             try:
-                if data[x] == ":":
-                    x += 1
+                if data[x] in key or data[x] in hexy:
                     if data[x] in key:
                         image_data += "\033[38;2;" + str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16)) + ";48;2;"
                         x += 1
@@ -172,6 +172,9 @@ def remage(file = "") -> None:
                     if size >= 1024:
                         size = round(size/1024)
                         size_style = "MiB"
+                        if size >= 1024:
+                            size = round(size/1024)
+                            size_style = "GiB"
 
                 print("Format: " + data[:5] + " | Size: " + str(size) + size_style + " "*(7-len(str(size))-len(size_style)) + " | Name: " + item[:-7])
             return
