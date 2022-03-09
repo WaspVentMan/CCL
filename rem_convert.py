@@ -32,7 +32,12 @@ def R256_Convert(name):
     return data
 
 def x2256_Convert(name):
-    red_image = Image.open(name + ".png"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; x = size[0];  y = size[1]; x = x/238; y = y/126; data = ""; temp = {}; t = 0; to_delete = []
+    try:
+        red_image = Image.open(name + ".png")
+    except:
+        red_image = Image.open(name + ".jpg")
+    
+    red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; x = size[0];  y = size[1]; x = x/238; y = y/126; data = ""; temp = {}; t = 0; to_delete = []
 
     if x > 1 or y > 1:
         if x > y: x = round(red_image_rgb.width/x); y = round(red_image_rgb.height/x)
@@ -65,10 +70,10 @@ def x2256_Convert(name):
             try:    used_values[r[2:] + g[2:] + b[2:]] += 1
             except: used_values[r[2:] + g[2:] + b[2:]] = 1
             data += ":" + r[2:] + g[2:] + b[2:]
-        data += "\\\n"
+        data += "\\"
         perc = round((y/floor(size[1]/2))*100)
-        print("["+"#"*perc+"-"*int(100-perc)+"]",end="\r")
-    print("[" + "#"*100 + "]")
+        print("["+"#"*perc+"-"*int(100-perc)+"] 1/1",end="\r")
+    print("[" + "#"*100 + "] 1/1",end="\r")
 
     for item in used_values:
         if used_values[item] > 1: temp[item] = used_values[item]
@@ -77,8 +82,8 @@ def x2256_Convert(name):
     sorted_dict = {}; sorted_keys = sorted(used_values, key=used_values.get, reverse=True)
     for w in sorted_keys: sorted_dict[w] = used_values[w]
 
-    # Unusable in shorters: 0123456789abcdef:@"\
-    shorters = " !#$%&()*+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+    # Unusable in shorters: 0123456789abcdef:@"{}\!#$%&()*
+    shorters = "+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
     for item in sorted_dict:
         if t + 1 > len(shorters): to_delete.append(item)
@@ -88,13 +93,56 @@ def x2256_Convert(name):
 
     data = data.replace(":", "")
 
+    n_data = ""
+
+    x = 0
+    y = 0
+    t_data = ""
+    num = "!#$%&()*"
+    while x < len(data):
+        if data[x] in shorters:
+            n_data += data[x]
+            count = 0
+            for z in range(9):
+                if data[x+z+1] == data[x]:
+                    count += 1
+                else:
+                    break
+            if count > 1:
+                n_data += str(num[count-2])
+                x += count + 1
+            else:
+                x += 1
+        elif data[x] == "\\":
+            n_data += "\\\n"
+            x += 1
+        else:
+            n_data += data[x]
+            x += 1
+        y += 1
+        if y == 100000:
+            t_data += n_data
+            n_data = ""
+            y = 0
+            perc = round(((x)/len(data))*100)
+            print("["+"#"*perc+"-"*int(100-perc)+"] " + str(x) + "/" + str(len(data)),end="\r")
+    print("["+"#"*100+"] " + str(x) + "/" + str(len(data)))
+    t_data += n_data
+
+    data = t_data
+
     sorted_dict = str(sorted_dict).replace("{", "").replace("}", "").replace("'", "").replace(": ", "").replace(", ", ":")
 
     data = "2x256" + str(sorted_dict) + "\n" + data
     a = open("images/" + name + ".remage", "w"); a.write(data)
 
 def x2256_Convert_lossy(name):
-    red_image = Image.open(name + ".png"); red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; x = size[0];  y = size[1]; x = x/238; y = y/126; data = ""; temp = {}; t = 0; to_delete = []
+    try:
+        red_image = Image.open(name + ".png")
+    except:
+        red_image = Image.open(name + ".jpg")
+    
+    red_image_rgb = red_image.convert("RGBA"); size = red_image.size; used_values = {}; x = size[0];  y = size[1]; x = x/238; y = y/126; data = ""; temp = {}; t = 0; to_delete = []
 
     if x > 1 or y > 1:
         if x > y: x = round(red_image_rgb.width/x); y = round(red_image_rgb.height/x)
@@ -127,10 +175,10 @@ def x2256_Convert_lossy(name):
             try:    used_values[r[2:] + g[2:] + b[2:]] += 1
             except: used_values[r[2:] + g[2:] + b[2:]] = 1
             data += ":" + r[2:] + g[2:] + b[2:]
-        data += "\\\n"
+        data += "\\"
         perc = round((y/floor(size[1]/2))*100)
-        print("["+"#"*perc+"-"*int(100-perc)+"]",end="\r")
-    print("[" + "#"*100 + "]")
+        print("["+"#"*perc+"-"*int(100-perc)+"] 1/1",end="\r")
+    print("[" + "#"*100 + "] 1/1",end="\r")
 
     for item in used_values:
         if used_values[item] > 1: temp[item] = used_values[item]
@@ -139,8 +187,8 @@ def x2256_Convert_lossy(name):
     sorted_dict = {}; sorted_keys = sorted(used_values, key=used_values.get, reverse=True)
     for w in sorted_keys: sorted_dict[w] = used_values[w]
 
-    # Unusable in shorters: 0123456789abcdef:@"\
-    shorters = " !#$%&()*+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+    # Unusable in shorters: 0123456789abcdef:@"{}\!#$%&()*
+    shorters = "+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
     for item in sorted_dict:
         if t + 1 > len(shorters): to_delete.append(item)
@@ -149,6 +197,44 @@ def x2256_Convert_lossy(name):
     for item in sorted_dict: data = data.replace(item, sorted_dict[item])
 
     data = data.replace(":", "")
+
+    n_data = ""
+
+    x = 0
+    y = 0
+    t_data = ""
+    num = "!#$%&()*"
+    while x < len(data):
+        if data[x] in shorters:
+            n_data += data[x]
+            count = 0
+            for z in range(9):
+                if data[x+z+1] == data[x]:
+                    count += 1
+                else:
+                    break
+            if count > 1:
+                n_data += str(num[count-2])
+                x += count + 1
+            else:
+                x += 1
+        elif data[x] == "\\":
+            n_data += "\\\n"
+            x += 1
+        else:
+            n_data += data[x]
+            x += 1
+        y += 1
+        if y == 100000:
+            t_data += n_data
+            n_data = ""
+            y = 0
+            perc = round(((x)/len(data))*100)
+            print("["+"#"*perc+"-"*int(100-perc)+"] " + str(x) + "/" + str(len(data)),end="\r")
+    print("["+"#"*100+"] " + str(x) + "/" + str(len(data)))
+    t_data += n_data
+
+    data = t_data
 
     sorted_dict = str(sorted_dict).replace("{", "").replace("}", "").replace("'", "").replace(": ", "").replace(", ", ":")
 
@@ -196,7 +282,7 @@ def x2256_anim_Convert(name):
                 try:    used_values[r[2:] + g[2:] + b[2:]] += 1
                 except: used_values[r[2:] + g[2:] + b[2:]] = 1
                 data += ":" + r[2:] + g[2:] + b[2:]
-            data += "\\\n"
+            data += "\\"
             perc = round((y/floor(size[1]/2))*100)
             print("["+"#"*perc+"-"*int(100-perc)+"] " + str(c) + "/" + str(length),end="\r")
         print("[" + "#"*100 + "] " + str(c) + "/" + str(length), end="\r")
@@ -205,7 +291,6 @@ def x2256_anim_Convert(name):
         t_data += data
         data = ""
     data = t_data
-    print("")
 
     for item in used_values:
         if used_values[item] > 1: temp[item] = used_values[item]
@@ -214,8 +299,8 @@ def x2256_anim_Convert(name):
     sorted_dict = {}; sorted_keys = sorted(used_values, key=used_values.get, reverse=True)
     for w in sorted_keys: sorted_dict[w] = used_values[w]
 
-    # Unusable in shorters: 0123456789abcdef:@"\
-    shorters = " !#$%&()*+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+    # Unusable in shorters: 0123456789abcdef:@"{}\!#$%&()*
+    shorters = "+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
     for item in sorted_dict:
         if t + 1 > len(shorters): to_delete.append(item)
@@ -224,6 +309,44 @@ def x2256_anim_Convert(name):
     for item in sorted_dict: data = data.replace(item, sorted_dict[item])
 
     data = data.replace(":", "")
+
+    n_data = ""
+
+    x = 0
+    y = 0
+    t_data = ""
+    num = "!#$%&()*"
+    while x < len(data):
+        if data[x] in shorters:
+            n_data += data[x]
+            count = 0
+            for z in range(9):
+                if data[x+z+1] == data[x]:
+                    count += 1
+                else:
+                    break
+            if count > 1:
+                n_data += str(num[count-2])
+                x += count + 1
+            else:
+                x += 1
+        elif data[x] == "\\":
+            n_data += "\\\n"
+            x += 1
+        else:
+            n_data += data[x]
+            x += 1
+        y += 1
+        if y == 100000:
+            t_data += n_data
+            n_data = ""
+            y = 0
+            perc = round(((x)/len(data))*100)
+            print("["+"#"*perc+"-"*int(100-perc)+"] " + str(x) + "/" + str(len(data)),end="\r")
+    print("["+"#"*100+"] " + str(x) + "/" + str(len(data)))
+    t_data += n_data
+
+    data = t_data
 
     sorted_dict = str(sorted_dict).replace("{", "").replace("}", "").replace("'", "").replace(": ", "").replace(", ", ":")
 
@@ -271,9 +394,9 @@ def x2256_anim_Convert_lossy(name):
                 try:    used_values[r[2:] + g[2:] + b[2:]] += 1
                 except: used_values[r[2:] + g[2:] + b[2:]] = 1
                 data += ":" + r[2:] + g[2:] + b[2:]
-            data += "\\\n"
+            data += "\\"
             perc = floor((y/floor(size[1]/2))*100)
-            print("["+"#"*(perc)+"-"*int(100-perc) + "] " + str(c) + "/" + str(length),end="\r")
+            print("["+"#"*perc+"-"*int(100-perc)+"] " + str(c) + "/" + str(length),end="\r")
         print("[" + "#"*100 + "] " + str(c) + "/" + str(length), end="\r")
         c += 1
         data += "@\n"
@@ -289,8 +412,8 @@ def x2256_anim_Convert_lossy(name):
     sorted_dict = {}; sorted_keys = sorted(used_values, key=used_values.get, reverse=True)
     for w in sorted_keys: sorted_dict[w] = used_values[w]
 
-    # Unusable in shorters: 0123456789abcdef:@"{}'\
-    shorters = " !#$%&()*+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+    # Unusable in shorters: 0123456789abcdef:@"{}\!#$%&()*
+    shorters = "+,-./;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`ghijklmnopqrstuvwxyz|~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
 
     for item in sorted_dict:
         if t + 1 > len(shorters): to_delete.append(item)
@@ -300,6 +423,44 @@ def x2256_anim_Convert_lossy(name):
 
     data = data.replace(":", "")
 
+    n_data = ""
+
+    x = 0
+    y = 0
+    t_data = ""
+    num = "!#$%&()*"
+    while x < len(data):
+        if data[x] in shorters:
+            n_data += data[x]
+            count = 0
+            for z in range(9):
+                if data[x+z+1] == data[x]:
+                    count += 1
+                else:
+                    break
+            if count > 1:
+                n_data += str(num[count-2])
+                x += count + 1
+            else:
+                x += 1
+        elif data[x] == "\\":
+            n_data += "\\\n"
+            x += 1
+        else:
+            n_data += data[x]
+            x += 1
+        y += 1
+        if y == 100000:
+            t_data += n_data
+            n_data = ""
+            y = 0
+            perc = round(((x)/len(data))*100)
+            print("["+"#"*perc+"-"*int(100-perc)+"] " + str(x) + "/" + str(len(data)),end="\r")
+    print("["+"#"*100+"] " + str(x) + "/" + str(len(data)))
+    t_data += n_data
+
+    data = t_data
+
     sorted_dict = str(sorted_dict).replace("{", "").replace("}", "").replace("'", "").replace(": ", "").replace(", ", ":")
 
     data = "256AN" + str(sorted_dict) + "\n" + data
@@ -308,18 +469,27 @@ def x2256_anim_Convert_lossy(name):
 while True:
     mode = ""
     while mode not in ["A", "S"]:
-        image = input("Input the .png or .gif name. (Without file extension)\nor type \"all\" to convert all images in the root directory\n>>> ")
+        image = input("Input the .png, .jpg or .gif name. (Without file extension)\nor type \"all\" to convert all images in the root directory\n>>> ")
         dir = os.listdir()
         if image == "frame":
             print("Invalid image.")
 
-        elif image == "all":
+        elif image.startswith("all"):
+            args = image.split(" ")
+            del args[0]
             while mode not in ["-", "+"]:
                 mode = input("Lossy (-) or Lossless (+)?\n>>> ")
             for item in dir:
-                if item[:-4] == "frame":
+                if "-" + item[:-4] in args:
+                    print("Image " + item + " skipped due to filters.")
+                elif "-" + item[-3:] in args:
+                    print("Image " + item + " skipped due to filters.")
+                elif item[:-4] == "frame":
                     pass
                 elif item[-3:] == "png":
+                    if mode == "-": x2256_Convert_lossy(item[:-4])
+                    else:           x2256_Convert(item[:-4])
+                elif item[-3:] == "jpg":
                     if mode == "-": x2256_Convert_lossy(item[:-4])
                     else:           x2256_Convert(item[:-4])
                 elif item[-3:] == "gif":

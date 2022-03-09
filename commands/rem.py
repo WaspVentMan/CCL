@@ -75,9 +75,12 @@ def remage2x256(file):
         data = "".join(data)
     
     key = []
-    hexy = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
+    hexy = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
+    num = {"!": 2, "#": 3, "$": 4, "%": 5, "&": 6, "(": 7, ")": 8, "*": 9}
 
-    for item in key_data: key.append(item) 
+    for item in key_data: key.append(item)
+
+    count = 0
     
     image_data, x = "", 0
     while x < len(data):
@@ -85,13 +88,27 @@ def remage2x256(file):
             if data[x] in key or data[x] in hexy:
                 if data[x] in key:
                     image_data += "\033[38;2;" + str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16)) + ";48;2;"
-                    x += 1
+                    if data[x+1] in key or data[x+1] == "\\" or data[x+1] in hexy:
+                        x += 1
+                    else:
+                        count += 1
+                        if int(num[data[x+1]]) <= int(count):
+                            count = -1
+                            x += 2
+                        else: pass
                 else:
                     image_data += "\033[38;2;" + str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16)) + ";48;2;"
                     x += 6
                 if data[x] in key:
                     image_data += str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16))
-                    x += 1
+                    if data[x+1] in key or data[x+1] == "\\" or data[x+1] in hexy:
+                        x += 1
+                    else:
+                        count += 1
+                        if int(num[data[x+1]]) <= int(count):
+                            count = -1
+                            x += 2
+                        else: pass
                 else:
                     image_data += str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16))
                     x += 6
@@ -117,9 +134,12 @@ def remani2x256(file):
     
     key = []
     hexy = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
+    num = {"!": 2, "#": 3, "$": 4, "%": 5, "&": 6, "(": 7, ")": 8, "*": 9}
 
     for item in key_data:
         key.append(item) 
+
+    count = 0
     
     image_data = ""
     for f in range(20):
@@ -129,13 +149,27 @@ def remani2x256(file):
                 if data[x] in key or data[x] in hexy:
                     if data[x] in key:
                         image_data += "\033[38;2;" + str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16)) + ";48;2;"
-                        x += 1
+                        if data[x+1] in key or data[x+1] == "\\" or data[x+1] in hexy:
+                            x += 1
+                        else:
+                            count += 1
+                            if int(num[data[x+1]]) <= int(count):
+                                count = -1
+                                x += 2
+                            else: pass
                     else:
                         image_data += "\033[38;2;" + str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16)) + ";48;2;"
                         x += 6
                     if data[x] in key:
                         image_data += str(int("0x" + str(key_data[data[x]][:-4]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][2:-2]), base=16)) + ";" + str(int("0x" + str(key_data[data[x]][4:]), base=16))
-                        x += 1
+                        if data[x+1] in key or data[x+1] == "\\" or data[x+1] in hexy:
+                            x += 1
+                        else:
+                            count += 1
+                            if int(num[data[x+1]]) <= int(count):
+                                count = -1
+                                x += 2
+                            else: pass
                     else:
                         image_data += str(int("0x" + str(data[x] + data[x+1]), base=16)) + ";" + str(int("0x" + str(data[x+2] + data[x+3]), base=16)) + ";" + str(int("0x" + str(data[x+4] + data[x+5]), base=16))
                         x += 6
